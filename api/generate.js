@@ -13,9 +13,10 @@ const HF_IMAGE_MAP = {
 };
 
 async function fetchFromHuggingFace(prompt, model) {
+  console.log(`[HF] Generating: ${prompt} with ${model}`);
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 9000);
+  const timer = setTimeout(() => controller.abort(), 12000);
 
   try {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
@@ -33,6 +34,7 @@ async function fetchFromHuggingFace(prompt, model) {
     });
 
     if (res.status === 429) {
+      console.log('[HF] Rate limited');
       const e = new Error('Rate limited');
       e.status = 429;
       throw e;
@@ -40,6 +42,7 @@ async function fetchFromHuggingFace(prompt, model) {
 
     const contentType = res.headers.get('content-type') || '';
     if (!res.ok || !contentType.startsWith('image/')) {
+      console.log(`[HF] Error: ${res.status}`);
       throw new Error(`HF ${res.status}`);
     }
 
@@ -51,6 +54,7 @@ async function fetchFromHuggingFace(prompt, model) {
 }
 
 async function fetchFromPollinations(prompt, model) {
+  console.log(`[Pol] Falling back for: ${prompt}`);
   const modelOrder = [model, 'turbo', 'flux'].filter((m, i, a) => a.indexOf(m) === i);
 
   for (const m of modelOrder) {
