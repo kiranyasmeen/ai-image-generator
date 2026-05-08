@@ -30,6 +30,14 @@ async function enhanceViaHF(prompt) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   const prompt = (req.query.prompt || '').trim();
   if (!prompt) { res.status(400).json({ error: 'prompt is required' }); return; }
   const fallback = `${prompt}, highly detailed, photorealistic, cinematic lighting, 8k, masterpiece, sharp focus`;

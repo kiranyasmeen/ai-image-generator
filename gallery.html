@@ -57,23 +57,24 @@
                 // Add a unique timestamp to prevent caching
                 const url = `/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`;
                 
-                resultImg.src = url;
                 resultArea.style.display = 'block';
                 resultPrompt.innerText = prompt;
+                resultImg.style.opacity = '0.5'; // Visual cue that it's loading
+                resultImg.src = url;
                 
-                // Add a timeout for the image load
                 const loadTimeout = setTimeout(() => {
                     if (btn.disabled) {
                         btn.disabled = false;
                         btn.innerText = 'Generate';
-                        alert('Generation is taking longer than expected. Please check back in a few seconds or try a simpler prompt.');
+                        alert('Still generating... The model might be slow. Please wait another moment.');
                     }
-                }, 15000);
+                }, 20000);
 
                 resultImg.onload = () => {
                     clearTimeout(loadTimeout);
                     btn.disabled = false;
                     btn.innerText = 'Generate';
+                    resultImg.style.opacity = '1';
                     resultImg.scrollIntoView({ behavior: 'smooth' });
                 };
                 
@@ -81,12 +82,16 @@
                     clearTimeout(loadTimeout);
                     btn.disabled = false;
                     btn.innerText = 'Generate';
+                    resultImg.style.opacity = '1';
                     
-                    // Try to fetch the error message from the API
                     try {
                         const checkRes = await fetch(url);
-                        const errData = await checkRes.json();
-                        alert(`Generation Error: ${errData.error || 'The model is currently busy. Please wait 1 minute and try again.'}`);
+                        if (checkRes.status === 429) {
+                            alert('Too many requests. Please wait about 30 seconds before trying again.');
+                        } else {
+                            const errData = await checkRes.json();
+                            alert(`Error: ${errData.error || 'The AI model is temporarily busy. Please try again in a moment.'}`);
+                        }
                     } catch (e) {
                         alert('Generation failed. The AI model might be cold-starting or busy. Please try again in a moment.');
                     }
@@ -94,7 +99,7 @@
             } catch (e) {
                 btn.disabled = false;
                 btn.innerText = 'Generate';
-                alert('Error: ' + e.message);
+                alert('Request failed: ' + e.message);
             }
         }
     </script>

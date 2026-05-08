@@ -85,6 +85,14 @@ async function fetchFromPollinations(prompt, model) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   const prompt = req.query.prompt || 'a beautiful landscape';
   const model  = req.query.model  || 'flux';
 
@@ -97,14 +105,13 @@ export default async function handler(req, res) {
         result = await fetchFromHuggingFace(prompt, model);
       } catch (e) {
         hfError = e.message;
-        console.log(`[HF] Failed: ${hfError}`);
-        
         if (e.status === 429) {
-          res.status(429).json({ error: 'HuggingFace Rate Limited. Please wait 1 minute.' });
-          return;
+          console.log('[HF] Rate limited — falling back to Pollinations');
+        } else {
+          console.log(`[HF] Failed: ${hfError} — falling back to Pollinations`);
         }
         
-        // Only fallback if it's not a rate limit
+        // Always fallback to Pollinations if HF fails for any reason
         result = await fetchFromPollinations(prompt, model);
       }
     } else {
