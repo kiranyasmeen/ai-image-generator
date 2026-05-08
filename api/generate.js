@@ -90,17 +90,25 @@ export default async function handler(req, res) {
 
   try {
     let result;
+    let hfError = null;
+
     if (process.env.HF_API_KEY || process.env.HF_TOKEN) {
       try {
         result = await fetchFromHuggingFace(prompt, model);
       } catch (e) {
+        hfError = e.message;
+        console.log(`[HF] Failed: ${hfError}`);
+        
         if (e.status === 429) {
-          res.status(429).json({ error: 'Too many requests' });
+          res.status(429).json({ error: 'HuggingFace Rate Limited. Please wait 1 minute.' });
           return;
         }
+        
+        // Only fallback if it's not a rate limit
         result = await fetchFromPollinations(prompt, model);
       }
     } else {
+      hfError = 'HF_TOKEN not found in Vercel environment';
       result = await fetchFromPollinations(prompt, model);
     }
 
@@ -108,6 +116,8 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).send(Buffer.from(result.buffer));
   } catch (e) {
-    res.status(503).json({ error: e.message });
+    res.status(503).json({ 
+      error: `Service Unavailable. HF Error: ${hfError || 'None'}. Pol Error: ${e.message}` 
+    });
   }
 }
