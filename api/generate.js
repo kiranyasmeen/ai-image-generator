@@ -1,6 +1,6 @@
 /**
  * Vercel Serverless Function — /api/generate
- * DEEP RESILIENCE VERSION
+ * TOGETHER AI OPTIMIZED VERSION
  */
 
 const HF_IMAGE_MAP = {
@@ -13,26 +13,36 @@ const HF_IMAGE_MAP = {
 async function fetchFromHuggingFace(prompt, model, apiKey) {
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 18000); // 18s for primary
+  const timer = setTimeout(() => controller.abort(), 20000); // 20s patience for Together
 
   try {
+    console.log(`[TogetherAI] Calling HF with provider: together | Model: ${hfModel}`);
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
       method: 'POST',
       headers: {
         'Authorization':    `Bearer ${apiKey}`,
         'Content-Type':     'application/json',
         'x-wait-for-model': 'true',
+        'x-provider':       'together', // FORCING TOGETHER AI PROVIDER
       },
       body: JSON.stringify({
         inputs:     prompt,
-        parameters: { num_inference_steps: 4 },
+        parameters: { 
+          num_inference_steps: 4,
+          width: 1024,
+          height: 1024
+        },
       }),
       signal: controller.signal,
     });
 
-    if (!res.ok) throw new Error(`HF ${res.status}`);
+    if (!res.ok) {
+        const errorText = await res.text().catch(() => '');
+        throw new Error(`HF-Together Error ${res.status}: ${errorText.slice(0, 100)}`);
+    }
+
     const contentType = res.headers.get('content-type') || '';
-    if (!contentType.startsWith('image/')) throw new Error('Not an image');
+    if (!contentType.startsWith('image/')) throw new Error('Response is not an image');
 
     const buffer = await res.arrayBuffer();
     return { buffer, contentType };
@@ -42,45 +52,30 @@ async function fetchFromHuggingFace(prompt, model, apiKey) {
 }
 
 async function fetchWithFallback(prompt, model) {
-  // Rotate through multiple tiers of fallback
-  const fallbackModels = [model, 'flux', 'turbo', 'dreamshaper', 'deliberate'];
-  
+  const fallbackModels = [model, 'flux', 'turbo', 'dreamshaper'];
   for (const m of fallbackModels) {
-    console.log(`[Resilience] Trying engine tier: ${m}`);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12000); // 12s per fallback
+    const timer = setTimeout(() => controller.abort(), 12000);
     const seed = Math.floor(Math.random() * 999999);
-    
     try {
       const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&model=${m}&nologo=true`;
       const res = await fetch(url, { signal: controller.signal });
-      
       if (res.ok && res.headers.get('content-type')?.startsWith('image/')) {
         const buffer = await res.arrayBuffer();
         return { buffer, contentType: res.headers.get('content-type') };
       }
     } catch (e) {
-      console.warn(`[Resilience] Tier ${m} failed: ${e.message}`);
+      console.warn(`[Fallback] ${m} failed: ${e.message}`);
     } finally {
       clearTimeout(timer);
     }
   }
-  
-  // FINAL EMERGENCY: Raw prompt with no model params (Uses pollinations default high-speed)
-  const lastResortUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true`;
-  const finalRes = await fetch(lastResortUrl);
-  if (finalRes.ok) {
-    const buffer = await finalRes.arrayBuffer();
-    return { buffer, contentType: finalRes.headers.get('content-type') };
-  }
-
-  throw new Error('All high-performance engines are saturated. Please try in 5 seconds.');
+  throw new Error('Creative engines saturated. Retrying...');
 }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const prompt = req.query.prompt || 'a professional landscape';
@@ -93,6 +88,7 @@ export default async function handler(req, res) {
       try {
         result = await fetchFromHuggingFace(prompt, model, HF_KEY);
       } catch (e) {
+        console.error('[HF Failed]', e.message);
         result = await fetchWithFallback(prompt, model);
       }
     } else {
