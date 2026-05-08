@@ -19,55 +19,44 @@
         <a href="gallery.html" class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem;">Start Creating</a>
     </nav>
 
-    <!-- Corrected Alignment Header -->
-    <div class="page-header" style="padding-top: 140px; text-align: center; padding-bottom: 40px;">
-        <h1 style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -2px; margin-bottom: 15px;">AI Art <span class="accent">Studio</span></h1>
-        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Your professional creative engine. Craft, scale, and iterate in seconds.</p>
+    <div class="page-header" style="padding-top: 130px; text-align: center; padding-bottom: 30px;">
+        <h1 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px;">AI Art <span class="accent">Studio</span></h1>
         
-        <div class="generator-container" style="max-width: 800px; margin: 40px auto; display: flex; flex-direction: column; gap: 15px; padding: 25px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
-            <div style="display: flex; gap: 12px; width: 100%;">
-                <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 15px 20px; font-size: 16px; outline: none; transition: 0.3s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-                <button onclick="enhancePrompt()" id="enhance-btn" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
-                    ✨ ENHANCE
-                </button>
+        <div class="generator-container" style="max-width: 800px; margin: 30px auto; display: flex; flex-direction: column; gap: 12px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(10px);">
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; padding: 12px 18px; font-size: 16px; outline: none; transition: 0.3s;">
+                <button onclick="enhancePrompt()" id="enhance-btn" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 0 15px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; transition: 0.3s;">✨ ENHANCE</button>
             </div>
-            <button onclick="generateImage()" id="gen-btn" style="width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 16px; transition: 0.3s; letter-spacing: 1.5px; box-shadow: 0 10px 30px var(--accent-glow);">
-                GENERATE MASTERPIECE
-            </button>
+            <button onclick="generateImage()" id="gen-btn" style="width: 100%; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 15px; transition: 0.3s; letter-spacing: 1px; box-shadow: 0 10px 25px var(--accent-glow);">GENERATE MASTERPIECE</button>
         </div>
         
         <!-- Live Result Area -->
-        <div id="result-area" style="display: none; margin-top: 50px; animation: fadeIn 0.5s ease-out;">
-            <div class="gallery-item" style="max-width: 600px; margin: 0 auto; background: var(--surface); border: 1px solid var(--accent); padding: 15px; border-radius: 24px;">
+        <div id="result-area" style="display: none; margin-top: 40px;">
+            <div class="gallery-item" style="max-width: 500px; margin: 0 auto; background: var(--surface); border: 1px solid var(--accent); padding: 10px; border-radius: 20px;">
                 <div style="position: relative;">
-                    <img id="result-img" src="" alt="Generated Art" style="width: 100%; border-radius: 16px;">
-                    <div id="loader-overlay" style="display: none; position: absolute; inset: 0; background: rgba(10,10,11,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px;">
-                        <div class="spinner" style="width: 40px; height: 40px; border: 4px solid rgba(16,185,129,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                        <p style="margin-top: 20px; font-weight: 800; letter-spacing: 2px; color: var(--accent);">PAINTING VISION...</p>
+                    <img id="result-img" src="" alt="Generated Art" style="width: 100%; border-radius: 12px;">
+                    <div id="loader-overlay" style="display: none; position: absolute; inset: 0; background: rgba(10,10,11,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px;">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 15px; font-weight: 800; letter-spacing: 2px; color: var(--accent); font-size: 12px;">PAINTING...</p>
                     </div>
                 </div>
-                <div class="gallery-item-info" style="text-align: left; padding: 20px 10px;">
-                    <h4 style="font-size: 1.1rem; font-weight: 800;">LATEST CREATION</h4>
-                    <p id="result-prompt" style="font-size: 14px; color: var(--text-muted); font-style: italic; margin-top: 8px;"></p>
-                    <div style="margin-top: 25px;">
-                        <button onclick="downloadImage()" style="width: 100%; padding: 15px; font-size: 14px; background: #10B981; border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; transition: 0.3s; letter-spacing: 1px;">💾 DOWNLOAD IMAGE</button>
+                <div class="gallery-item-info" style="text-align: left; padding: 15px 5px;">
+                    <div style="margin-top: 10px;">
+                        <button onclick="downloadImage()" style="width: 100%; padding: 12px; font-size: 13px; background: #10B981; border: none; border-radius: 8px; color: white; font-weight: 800; cursor: pointer; transition: 0.3s;">💾 DOWNLOAD IMAGE</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- History Grid -->
-    <section class="gallery-section" style="border-top: 1px solid var(--border); padding-top: 80px;">
+    <!-- History Grid (Asset Manager Layout) -->
+    <section class="gallery-section" style="border-top: 1px solid var(--border); padding-top: 60px;">
         <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
-                <div>
-                    <div class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); margin-bottom: 10px;">YOUR VAULT</div>
-                    <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -2px; margin: 0;">Studio <span class="accent">History</span></h2>
-                </div>
-                <button onclick="clearHistory()" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;">CLEAR ALL</button>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+                <h2 style="font-size: 2rem; font-weight: 900; letter-spacing: -1.5px; margin: 0;">Studio <span class="accent">Vault</span></h2>
+                <button onclick="clearHistory()" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">CLEAR ALL</button>
             </div>
-            <div id="history-grid" class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div id="history-grid" class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem;">
                 <!-- History items injected here -->
             </div>
         </div>
@@ -98,14 +87,14 @@
                 grid.innerHTML = historyItems.map((item) => {
                     const url = URL.createObjectURL(item.blob);
                     return `
-                        <div class="gallery-item" style="border-radius: 20px; border: 1px solid var(--border); overflow: hidden;">
-                            <img src="${url}" alt="Generated Image" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
-                            <div class="gallery-item-info" style="padding: 15px; background: var(--surface);">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <span style="font-size:10px; background:var(--accent); color:white; padding:2px 8px; border-radius:4px; font-weight:900;">PRO</span>
-                                    <button onclick="downloadFromUrl('${url}')" style="background:transparent; border:none; color:var(--accent); cursor:pointer; font-size: 16px;">💾</button>
+                        <div class="gallery-item" style="border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: var(--surface);">
+                            <img src="${url}" alt="Generated Image" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;">
+                            <div style="padding: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3);">
+                                <div style="display: flex; gap: 8px;">
+                                    <button onclick="downloadFromUrl('${url}')" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 5px; border-radius: 6px; cursor: pointer; font-size: 14px;">💾</button>
+                                    <button onclick="deleteItem(${item.id})" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 5px; border-radius: 6px; cursor: pointer; font-size: 14px;">🗑️</button>
                                 </div>
-                                <span style="font-size:12px; color:var(--text-muted); display:block; height: 2.8em; overflow:hidden; font-weight:500;">${item.prompt}</span>
+                                <span style="font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.3);">#${item.id}</span>
                             </div>
                         </div>
                     `;
@@ -120,7 +109,6 @@
             const resultArea = document.getElementById('result-area');
             const resultImg = document.getElementById('result-img');
             const loader = document.getElementById('loader-overlay');
-            const resultPrompt = document.getElementById('result-prompt');
 
             if (!prompt) return;
 
@@ -128,12 +116,11 @@
             btn.innerText = 'PAINTING...';
             loader.style.display = 'flex';
             resultArea.style.display = 'block';
-            resultPrompt.innerText = prompt;
             resultImg.style.opacity = '0.1';
 
             try {
                 const res = await fetch(`/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`);
-                if (!res.ok) throw new Error('Models busy, retrying in 5s...');
+                if (!res.ok) throw new Error('Busy. Retrying...');
                 
                 const blob = await res.blob();
                 const objectURL = URL.createObjectURL(blob);
@@ -149,13 +136,20 @@
                     resultImg.style.opacity = '1';
                     btn.disabled = false;
                     btn.innerText = 'GENERATE MASTERPIECE';
-                    resultImg.scrollIntoView({ behavior: 'smooth' });
                 };
             } catch (e) {
                 btn.disabled = false;
                 btn.innerText = 'GENERATE MASTERPIECE';
                 loader.style.display = 'none';
                 alert(e.message);
+            }
+        }
+
+        function deleteItem(id) {
+            if (confirm('Delete this image?')) {
+                const transaction = db.transaction(['history'], 'readwrite');
+                transaction.objectStore('history').delete(id);
+                transaction.oncomplete = () => updateHistoryUI();
             }
         }
 
@@ -197,7 +191,7 @@
 
     <style>
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { width: 30px; height: 30px; border: 3px solid rgba(16,185,129,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
     </style>
 </body>
 </html>
