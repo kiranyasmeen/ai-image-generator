@@ -27,6 +27,7 @@ async function fetchFromHuggingFace(prompt, model, apiKey) {
         'Authorization':    `Bearer ${apiKey}`,
         'Content-Type':     'application/json',
         'x-wait-for-model': 'true',
+        'x-provider':       'together',
       },
       body: JSON.stringify({
         inputs:     prompt,
