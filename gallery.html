@@ -56,7 +56,7 @@
                 <h2 style="font-size: 2rem; font-weight: 900; letter-spacing: -1.5px; margin: 0;">Studio <span class="accent">Vault</span></h2>
                 <button onclick="clearHistory()" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">CLEAR ALL</button>
             </div>
-            <div id="history-grid" class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem;">
+            <div id="history-grid" class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;">
                 <!-- History items injected here -->
             </div>
         </div>
@@ -87,14 +87,13 @@
                 grid.innerHTML = historyItems.map((item) => {
                     const url = URL.createObjectURL(item.blob);
                     return `
-                        <div class="gallery-item" style="border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: var(--surface);">
+                        <div class="gallery-item" style="border-radius: 10px; border: 1px solid var(--border); overflow: hidden; background: var(--surface);">
                             <img src="${url}" alt="Generated Image" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;">
-                            <div style="padding: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3);">
-                                <div style="display: flex; gap: 8px;">
-                                    <button onclick="downloadFromUrl('${url}')" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 5px; border-radius: 6px; cursor: pointer; font-size: 14px;">💾</button>
-                                    <button onclick="deleteItem(${item.id})" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 5px; border-radius: 6px; cursor: pointer; font-size: 14px;">🗑️</button>
+                            <div style="padding: 6px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4);">
+                                <div style="display: flex; gap: 5px;">
+                                    <button onclick="downloadFromUrl('${url}')" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 4px; border-radius: 4px; cursor: pointer; font-size: 12px;">💾</button>
+                                    <button onclick="deleteItem(${item.id})" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 4px; border-radius: 4px; cursor: pointer; font-size: 12px;">🗑️</button>
                                 </div>
-                                <span style="font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.3);">#${item.id}</span>
                             </div>
                         </div>
                     `;
