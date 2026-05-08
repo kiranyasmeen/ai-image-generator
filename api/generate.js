@@ -12,7 +12,7 @@ const HF_IMAGE_MAP = {
   'any-dark':     'stablediffusionapi/realistic-vision-v6.0-b1-inpaint',
 };
 
-async function fetchFromHuggingFace(prompt, model) {
+async function fetchFromHuggingFace(prompt, model, apiKey) {
   console.log(`[HF] Generating: ${prompt} with ${model}`);
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
   const controller = new AbortController();
@@ -23,7 +23,7 @@ async function fetchFromHuggingFace(prompt, model) {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
       method: 'POST',
       headers: {
-        'Authorization':    `Bearer ${process.env.HF_API_KEY || process.env.HF_TOKEN}`,
+        'Authorization':    `Bearer ${apiKey}`,
         'Content-Type':     'application/json',
         'x-wait-for-model': 'true',
       },
@@ -82,8 +82,10 @@ async function fetchFromPollinations(prompt, model) {
 }
 
 export default async function handler(req, res) {
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -92,28 +94,34 @@ export default async function handler(req, res) {
 
   const prompt = req.query.prompt || 'a beautiful landscape';
   const model  = req.query.model  || 'flux';
+  
+  // Detect API Key (Support both naming conventions)
+  const HF_KEY = process.env.HF_API_KEY || process.env.HF_TOKEN || process.env.HUGGINGFACE_API_KEY;
 
   try {
     let result;
-    let hfError = null;
+    let provider = 'pollinations';
 
-    if (process.env.HF_API_KEY || process.env.HF_TOKEN) {
+    if (HF_KEY) {
       try {
-        result = await fetchFromHuggingFace(prompt, model);
+        console.log(`[Generate] Attempting HuggingFace with model: ${model}`);
+        result = await fetchFromHuggingFace(prompt, model, HF_KEY);
+        provider = 'huggingface';
       } catch (e) {
-        hfError = e.message || 'Timeout/Error';
-        console.log(`[HF] Failed: ${hfError} — falling back to Pollinations`);
+        console.error(`[HF Error] ${e.message}. Falling back to Pollinations...`);
         result = await fetchFromPollinations(prompt, model);
       }
     } else {
+      console.warn('[Config] No HF_API_KEY found. Using Pollinations directly.');
       result = await fetchFromPollinations(prompt, model);
     }
 
     res.setHeader('Content-Type', result.contentType);
+    res.setHeader('X-Provider', provider);
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).send(Buffer.from(result.buffer));
   } catch (e) {
-    console.error('[Generate Error]', e.message);
+    console.error('[Final Error]', e.message);
     res.status(503).json({ 
       error: 'Generation failed. The models are busy, please try again in a moment.'
     });
