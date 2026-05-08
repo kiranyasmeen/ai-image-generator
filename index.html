@@ -4,100 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fluxion AI | Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.0">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Fluxion<span>.AI</span></div>
+        <a href="index.html" class="nav-brand">Fluxion<span>.AI</span></a>
         <ul class="nav-links">
             <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="gallery.html">Studio</a></li>
             <li><a href="models.html">Models</a></li>
             <li><a href="pricing.html">Pricing</a></li>
         </ul>
-        <a href="gallery.html" class="btn-nav">Start Creating</a>
-        <button class="hamburger" onclick="toggleMenu()">☰</button>
+        <a href="gallery.html" class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem;">Start Creating</a>
     </nav>
 
-    <section class="hero">
-        <div class="glow-orb"></div>
-        <div class="hero-content">
-            <div class="badge">Next-Gen Generative AI</div>
-            <h1>Turn Ideas Into <span class="accent">Masterpieces.</span></h1>
-            <p>Fluxion AI uses advanced neural diffusion to generate hyper-realistic artwork from simple text prompts in seconds.</p>
-            <div class="hero-buttons">
-                <a href="gallery.html" class="btn-primary">Explore Gallery</a>
-                <a href="models.html" class="btn-secondary">View Models</a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="image-card">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600" alt="AI Art">
-                <div class="image-overlay">
-                    <span>Generated in 1.2s</span>
+    <!-- Hero Section (Restored Elite Look) -->
+    <section class="hero-premium">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content-modern">
+                <div class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent);">STUDIO ACCESS NOW LIVE</div>
+                <h1>The Future of <br><span class="accent">Digital Art.</span></h1>
+                <p>Experience the most advanced AI engine ever built for professional creators. Fast, ethical, and high-performance.</p>
+                <div class="hero-buttons">
+                    <a href="gallery.html" class="btn-primary">START CREATING</a>
+                    <a href="pricing.html" class="btn-secondary">VIEW MODELS</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="features">
+    <section class="features" style="padding: 10rem 0;">
         <div class="container">
-            <h2>Why Choose <span class="accent">Fluxion?</span></h2>
-            <p class="section-sub">Everything you need to create stunning AI-generated artwork at scale.</p>
+            <div style="text-align: left; margin-bottom: 6rem; max-width: 850px;">
+                <div class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent);">ELITE CAPABILITIES</div>
+                <h2 style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -3px; line-height: 1.0; margin-bottom: 2.5rem;">Why Choose <span class="accent">Fluxion?</span></h2>
+                <p style="font-size: 1.2rem; color: var(--text-muted); line-height: 1.6;">The industry standard for professional generative intelligence. We provide the tools you need to build your empire at scale.</p>
+            </div>
+            
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
+                    <span class="feature-icon">⚡</span>
                     <h3>Ultra Fast</h3>
-                    <p>Generate 4K images in under 2 seconds using our optimized GPU clusters.</p>
+                    <p>Experience the world's fastest generation speeds. 4K masterpieces delivered in under 2 seconds.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Style Control</h3>
-                    <p>Choose from 50+ artistic styles — from photorealism to abstract expressionism.</p>
+                    <span class="feature-icon">🎨</span>
+                    <h3>Precision Style</h3>
+                    <p>Total control over your vision. 50+ professional presets including Photorealistic and Cinematic.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Ethical AI</h3>
-                    <p>Trained exclusively on licensed datasets. Creator rights are always protected.</p>
+                    <span class="feature-icon">🔒</span>
+                    <h3>Ethical Core</h3>
+                    <p>Built on licensed datasets with creator protection at the center. Professional AI you can trust.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3>API Access</h3>
-                    <p>Integrate Fluxion into your own apps with our easy-to-use REST API.</p>
+                    <span class="feature-icon">🌐</span>
+                    <h3>Enterprise API</h3>
+                    <p>Scale your creativity with our high-throughput REST API. Built for modern developer workflows.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="cta">
+    <section class="cta" style="padding: 10rem 0; border-top: 1px solid var(--border); background: radial-gradient(circle at center, rgba(16, 185, 129, 0.03) 0%, transparent 70%);">
         <div class="container text-center">
-            <h2>Ready to Create?</h2>
-            <p>Join 50,000+ creators already using Fluxion AI.</p>
-            <a href="pricing.html" class="btn-primary">Get Started Free</a>
+            <h2 style="font-size: clamp(3rem, 7vw, 5rem); font-weight: 900; letter-spacing: -4px; line-height: 1.0; margin-bottom: 2rem;">Ready to <span class="accent">Create?</span></h2>
+            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 4rem; max-width: 700px; margin-left: auto; margin-right: auto;">Join thousands of professional creators and studios who have switched to Fluxion AI for their production workflows.</p>
+            <a href="gallery.html" class="btn-primary">GET STARTED FREE</a>
         </div>
     </section>
 
-    <footer class="footer">
+    <footer class="footer" style="padding: 6rem 0 3rem; border-top: 1px solid var(--border); background: #050507;">
         <div class="container">
-            <div class="footer-top">
-                <div class="footer-brand">Fluxion<span>.AI</span></div>
-                <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="gallery.html">Gallery</a>
-                    <a href="models.html">Models</a>
-                    <a href="pricing.html">Pricing</a>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4rem;">
+                <div>
+                    <a href="#" class="nav-brand" style="font-size: 1.8rem;">Fluxion<span>.AI</span></a>
+                    <p style="color: var(--text-muted); margin-top: 1rem; max-width: 350px;">World-class generative intelligence for professional studios.</p>
+                </div>
+                <div style="display: flex; gap: 4rem;">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <span style="font-weight: 800; font-size: 0.75rem; color: white; letter-spacing: 1px;">PLATFORM</span>
+                        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem;">Home</a>
+                        <a href="gallery.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem;">Studio</a>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>Built with ❤️ by <strong>Kiran Yasmeen</strong> · © 2026 Fluxion AI</p>
+            <div style="padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem;">
+                <p>© 2026 Fluxion AI · Professional Studio Engine</p>
             </div>
         </div>
     </footer>
+
     <script>
-        function toggleMenu() {
-            document.querySelector('.nav-links').classList.toggle('open');
-        }
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.navbar');
+            if (window.scrollY > 50) nav.style.padding = '0.8rem 8%';
+            else nav.style.padding = '1.2rem 8%';
+        });
     </script>
 </body>
 </html>
