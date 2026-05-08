@@ -24,9 +24,14 @@
         <h1>AI Art <span class="accent">Studio</span></h1>
         <p>Type a prompt below to generate your own masterpiece in seconds.</p>
         
-        <div class="generator-container" style="max-width: 800px; margin: 30px auto; display: flex; gap: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: transparent; border: none; color: white; padding: 10px; font-size: 16px; outline: none;">
-            <button onclick="generateImage()" id="gen-btn" style="background: var(--accent); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s;">Generate</button>
+        <div class="generator-container" style="max-width: 800px; margin: 30px auto; display: flex; flex-direction: column; gap: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: transparent; border: none; color: white; padding: 10px; font-size: 16px; outline: none;">
+                <button onclick="enhancePrompt()" id="enhance-btn" style="background: rgba(255,255,255,0.1); color: #8B5CF6; border: 1px solid #8B5CF6; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 5px;">
+                    ✨ Enhance
+                </button>
+            </div>
+            <button onclick="generateImage()" id="gen-btn" style="width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.3s; letter-spacing: 0.5px;">Generate Masterpiece</button>
         </div>
         
         <div id="result-area" style="display: none; margin-top: 30px;">
@@ -41,6 +46,30 @@
     </div>
 
     <script>
+        async function enhancePrompt() {
+            const input = document.getElementById('prompt-input');
+            const btn = document.getElementById('enhance-btn');
+            const prompt = input.value.trim();
+            
+            if (!prompt) return alert('Please type something first');
+            
+            btn.disabled = true;
+            btn.innerText = '✨ Enhancing...';
+            
+            try {
+                const res = await fetch(`/api/enhance?prompt=${encodeURIComponent(prompt)}`);
+                const data = await res.json();
+                if (data.enhanced) {
+                    input.value = data.enhanced;
+                }
+            } catch (e) {
+                console.error('Enhance failed', e);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '✨ Enhance';
+            }
+        }
+
         async function generateImage() {
             const promptInput = document.getElementById('prompt-input');
             const prompt = promptInput.value.trim();
