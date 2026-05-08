@@ -3,193 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluxion AI | Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <title>Fluxion AI | Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Fluxion<span>.AI</span></div>
+        <a href="index.html" class="nav-brand">Fluxion<span>.AI</span></a>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
-            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="gallery.html" class="active">Studio</a></li>
             <li><a href="models.html">Models</a></li>
             <li><a href="pricing.html">Pricing</a></li>
         </ul>
-        <a href="pricing.html" class="btn-nav">Get Started</a>
-        <button class="hamburger" onclick="toggleMenu()">☰</button>
+        <a href="gallery.html" class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem;">Start Creating</a>
     </nav>
 
-    <div class="page-header" style="padding-top: 120px; text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px;">AI Art <span class="accent">Studio</span></h1>
-        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Your professional creative engine. Craft, scale, and iterate in seconds.</p>
+    <!-- Corrected Alignment Header -->
+    <div class="page-header" style="padding-top: 140px; text-align: center; padding-bottom: 40px;">
+        <h1 style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -2px; margin-bottom: 15px;">AI Art <span class="accent">Studio</span></h1>
+        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto;">Your professional creative engine. Craft, scale, and iterate in seconds.</p>
         
-        <div class="generator-container" style="max-width: 800px; margin: 30px auto; display: flex; flex-direction: column; gap: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-            <div style="display: flex; gap: 10px; width: 100%;">
-                <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: transparent; border: none; color: white; padding: 10px; font-size: 16px; outline: none;">
-                <button onclick="enhancePrompt()" id="enhance-btn" style="background: rgba(255,255,255,0.1); color: #8B5CF6; border: 1px solid #8B5CF6; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 5px;">
-                    ✨ Enhance
+        <div class="generator-container" style="max-width: 800px; margin: 40px auto; display: flex; flex-direction: column; gap: 15px; padding: 25px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
+            <div style="display: flex; gap: 12px; width: 100%;">
+                <input type="text" id="prompt-input" placeholder="A futuristic city in the clouds..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; padding: 15px 20px; font-size: 16px; outline: none; transition: 0.3s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                <button onclick="enhancePrompt()" id="enhance-btn" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px;">
+                    ✨ ENHANCE
                 </button>
             </div>
-            <button onclick="generateImage()" id="gen-btn" style="width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 16px; transition: 0.3s; letter-spacing: 0.5px;">Generate Masterpiece</button>
+            <button onclick="generateImage()" id="gen-btn" style="width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 16px; transition: 0.3s; letter-spacing: 1.5px; box-shadow: 0 10px 30px var(--accent-glow);">
+                GENERATE MASTERPIECE
+            </button>
         </div>
         
-        <div id="result-area" style="display: none; margin-top: 30px;">
-            <div class="gallery-item" style="max-width: 500px; margin: 0 auto;">
-                <img id="result-img" src="" alt="Generated Art" style="width: 100%; border-radius: 12px; border: 2px solid var(--accent);">
-                <div class="gallery-item-info">
-                    <h4 id="result-title">New Generation</h4>
-                    <span id="result-prompt"></span>
+        <!-- Live Result Area -->
+        <div id="result-area" style="display: none; margin-top: 50px; animation: fadeIn 0.5s ease-out;">
+            <div class="gallery-item" style="max-width: 600px; margin: 0 auto; background: var(--surface); border: 1px solid var(--accent); padding: 15px; border-radius: 24px;">
+                <div style="position: relative;">
+                    <img id="result-img" src="" alt="Generated Art" style="width: 100%; border-radius: 16px;">
+                    <div id="loader-overlay" style="display: none; position: absolute; inset: 0; background: rgba(10,10,11,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px;">
+                        <div class="spinner" style="width: 40px; height: 40px; border: 4px solid rgba(16,185,129,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        <p style="margin-top: 20px; font-weight: 800; letter-spacing: 2px; color: var(--accent);">PAINTING VISION...</p>
+                    </div>
+                </div>
+                <div class="gallery-item-info" style="text-align: left; padding: 20px 10px;">
+                    <h4 style="font-size: 1.1rem; font-weight: 800;">LATEST CREATION</h4>
+                    <p id="result-prompt" style="font-size: 14px; color: var(--text-muted); font-style: italic; margin-top: 8px;"></p>
+                    <div style="margin-top: 25px;">
+                        <button onclick="downloadImage()" style="width: 100%; padding: 15px; font-size: 14px; background: #10B981; border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; transition: 0.3s; letter-spacing: 1px;">💾 DOWNLOAD IMAGE</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        async function enhancePrompt() {
-            const input = document.getElementById('prompt-input');
-            const btn = document.getElementById('enhance-btn');
-            const prompt = input.value.trim();
-            
-            if (!prompt) return alert('Please type something first');
-            
-            btn.disabled = true;
-            btn.innerText = '✨ Enhancing...';
-            
-            try {
-                const res = await fetch(`/api/enhance?prompt=${encodeURIComponent(prompt)}`);
-                const data = await res.json();
-                if (data.enhanced) {
-                    input.value = data.enhanced;
-                }
-            } catch (e) {
-                console.error('Enhance failed', e);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = '✨ Enhance';
-            }
-        }
-
-        async function generateImage() {
-            const promptInput = document.getElementById('prompt-input');
-            const prompt = promptInput.value.trim();
-            const btn = document.getElementById('gen-btn');
-            const resultArea = document.getElementById('result-area');
-            const resultImg = document.getElementById('result-img');
-            const resultPrompt = document.getElementById('result-prompt');
-
-            if (!prompt) return alert('Please enter a prompt');
-
-            const performGeneration = async (isRetry = false) => {
-                btn.disabled = true;
-                btn.innerText = isRetry ? 'Retrying...' : 'Generating...';
-                
-                try {
-                    resultArea.style.display = 'block';
-                    resultPrompt.innerText = prompt;
-                    resultImg.style.opacity = '0.3';
-                    
-                    const url = `/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`;
-                    const response = await fetch(url);
-                    
-                    if (!response.ok) {
-                        if (!isRetry && (response.status === 503 || response.status === 429)) {
-                            console.log('Server busy, retrying in 2 seconds...');
-                            await new Promise(r => setTimeout(r, 2000));
-                            return performGeneration(true);
-                        }
-                        const data = await response.json().catch(() => ({}));
-                        throw new Error(data.error || `Server returned ${response.status}`);
-                    }
-                    
-                    const blob = await response.blob();
-                    const objectURL = URL.createObjectURL(blob);
-                    
-                    resultImg.src = objectURL;
-                    resultImg.onload = () => {
-                        resultImg.style.opacity = '1';
-                        btn.disabled = false;
-                        btn.innerText = 'Generate';
-                        resultImg.scrollIntoView({ behavior: 'smooth' });
-                    };
-                } catch (e) {
-                    console.error(e);
-                    btn.disabled = false;
-                    btn.innerText = 'Generate';
-                    resultImg.style.opacity = '1';
-                    alert('Generation Error: ' + e.message);
-                }
-            };
-
-            await performGeneration();
-        }
-    </script>
-
-    <section class="gallery-section">
+    <!-- History Grid -->
+    <section class="gallery-section" style="border-top: 1px solid var(--border); padding-top: 80px;">
         <div class="container">
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600" alt="Abstract Art">
-                    <div class="gallery-item-info">
-                        <h4>Neon Dreams</h4>
-                        <span>Prompt: "Abstract neon lights in a dark city"</span>
-                    </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+                <div>
+                    <div class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); margin-bottom: 10px;">YOUR VAULT</div>
+                    <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -2px; margin: 0;">Studio <span class="accent">History</span></h2>
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=600" alt="Cyberpunk">
-                    <div class="gallery-item-info">
-                        <h4>Cyber Landscape</h4>
-                        <span>Prompt: "Futuristic cyberpunk city at night"</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=600" alt="Nature AI">
-                    <div class="gallery-item-info">
-                        <h4>Quantum Forest</h4>
-                        <span>Prompt: "Bioluminescent forest in another dimension"</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1614851099511-773084f6911d?auto=format&fit=crop&q=80&w=600" alt="Abstract">
-                    <div class="gallery-item-info">
-                        <h4>Neural Flow</h4>
-                        <span>Prompt: "Neural network visualization as abstract art"</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&q=80&w=600" alt="Cosmos">
-                    <div class="gallery-item-info">
-                        <h4>Cosmic Storm</h4>
-                        <span>Prompt: "Colorful nebula with lightning strikes"</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?auto=format&fit=crop&q=80&w=600" alt="Colors">
-                    <div class="gallery-item-info">
-                        <h4>Chromatic Burst</h4>
-                        <span>Prompt: "Explosion of vibrant colors in oil paint"</span>
-                    </div>
-                </div>
+                <button onclick="clearHistory()" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;">CLEAR ALL</button>
+            </div>
+            <div id="history-grid" class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
+                <!-- History items injected here -->
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-brand">Fluxion<span>.AI</span></div>
-                <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="gallery.html">Gallery</a>
-                    <a href="models.html">Models</a>
-                    <a href="pricing.html">Pricing</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>Built with ❤️ by <strong>Kiran Yasmeen</strong> · © 2026 Fluxion AI</p>
-            </div>
-        </div>
-    </footer>
-    <script>function toggleMenu() { document.querySelector('.nav-links').classList.toggle('open'); }</script>
+    <script>
+        let db;
+        const dbRequest = indexedDB.open('FluxionStudioDB', 1);
+        dbRequest.onupgradeneeded = (e) => {
+            db = e.target.result;
+            if (!db.objectStoreNames.contains('history')) {
+                db.createObjectStore('history', { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        dbRequest.onsuccess = (e) => {
+            db = e.target.result;
+            updateHistoryUI();
+        };
+
+        function updateHistoryUI() {
+            if (!db) return;
+            const transaction = db.transaction(['history'], 'readonly');
+            const store = transaction.objectStore('history');
+            const request = store.getAll();
+            request.onsuccess = () => {
+                const historyItems = request.result.reverse();
+                const grid = document.getElementById('history-grid');
+                grid.innerHTML = historyItems.map((item) => {
+                    const url = URL.createObjectURL(item.blob);
+                    return `
+                        <div class="gallery-item" style="border-radius: 20px; border: 1px solid var(--border); overflow: hidden;">
+                            <img src="${url}" alt="Generated Image" style="width: 100%; aspect-ratio: 1/1; object-fit: cover;">
+                            <div class="gallery-item-info" style="padding: 15px; background: var(--surface);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span style="font-size:10px; background:var(--accent); color:white; padding:2px 8px; border-radius:4px; font-weight:900;">PRO</span>
+                                    <button onclick="downloadFromUrl('${url}')" style="background:transparent; border:none; color:var(--accent); cursor:pointer; font-size: 16px;">💾</button>
+                                </div>
+                                <span style="font-size:12px; color:var(--text-muted); display:block; height: 2.8em; overflow:hidden; font-weight:500;">${item.prompt}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            };
+        }
+
+        async function generateImage() {
+            const input = document.getElementById('prompt-input');
+            const prompt = input.value.trim();
+            const btn = document.getElementById('gen-btn');
+            const resultArea = document.getElementById('result-area');
+            const resultImg = document.getElementById('result-img');
+            const loader = document.getElementById('loader-overlay');
+            const resultPrompt = document.getElementById('result-prompt');
+
+            if (!prompt) return;
+
+            btn.disabled = true;
+            btn.innerText = 'PAINTING...';
+            loader.style.display = 'flex';
+            resultArea.style.display = 'block';
+            resultPrompt.innerText = prompt;
+            resultImg.style.opacity = '0.1';
+
+            try {
+                const res = await fetch(`/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`);
+                if (!res.ok) throw new Error('Models busy, retrying in 5s...');
+                
+                const blob = await res.blob();
+                const objectURL = URL.createObjectURL(blob);
+                
+                const transaction = db.transaction(['history'], 'readwrite');
+                const store = transaction.objectStore('history');
+                store.add({ prompt, blob, timestamp: Date.now() });
+                transaction.oncomplete = () => updateHistoryUI();
+
+                resultImg.src = objectURL;
+                resultImg.onload = () => {
+                    loader.style.display = 'none';
+                    resultImg.style.opacity = '1';
+                    btn.disabled = false;
+                    btn.innerText = 'GENERATE MASTERPIECE';
+                    resultImg.scrollIntoView({ behavior: 'smooth' });
+                };
+            } catch (e) {
+                btn.disabled = false;
+                btn.innerText = 'GENERATE MASTERPIECE';
+                loader.style.display = 'none';
+                alert(e.message);
+            }
+        }
+
+        async function enhancePrompt() {
+            const input = document.getElementById('prompt-input');
+            const btn = document.getElementById('enhance-btn');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+            btn.innerText = '...';
+            try {
+                const res = await fetch(`/api/enhance?prompt=${encodeURIComponent(prompt)}`);
+                const data = await res.json();
+                if (data.enhanced) input.value = data.enhanced;
+            } finally {
+                btn.innerText = '✨ ENHANCE';
+            }
+        }
+
+        function downloadImage() {
+            const img = document.getElementById('result-img');
+            if (img.src) downloadFromUrl(img.src);
+        }
+
+        function downloadFromUrl(url) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fluxion-${Date.now()}.png`;
+            a.click();
+        }
+
+        function clearHistory() {
+            if (confirm('Clear entire studio vault?')) {
+                const transaction = db.transaction(['history'], 'readwrite');
+                transaction.objectStore('history').clear();
+                transaction.oncomplete = () => updateHistoryUI();
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </body>
 </html>
