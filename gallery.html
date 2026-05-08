@@ -51,42 +51,48 @@
 
             if (!prompt) return alert('Please enter a prompt');
 
-            btn.disabled = true;
-            btn.innerText = 'Generating...';
-            
-            try {
-                resultArea.style.display = 'block';
-                resultPrompt.innerText = prompt;
-                resultImg.style.opacity = '0.3';
+            const performGeneration = async (isRetry = false) => {
+                btn.disabled = true;
+                btn.innerText = isRetry ? 'Retrying...' : 'Generating...';
                 
-                // Add unique timestamp to prevent caching
-                const url = `/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`;
-                
-                // Use fetch instead of setting img.src directly for better control
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    const data = await response.json().catch(() => ({}));
-                    throw new Error(data.error || `Server returned ${response.status}`);
-                }
-                
-                const blob = await response.blob();
-                const objectURL = URL.createObjectURL(blob);
-                
-                resultImg.src = objectURL;
-                resultImg.onload = () => {
-                    resultImg.style.opacity = '1';
+                try {
+                    resultArea.style.display = 'block';
+                    resultPrompt.innerText = prompt;
+                    resultImg.style.opacity = '0.3';
+                    
+                    const url = `/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`;
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        if (!isRetry && (response.status === 503 || response.status === 429)) {
+                            console.log('Server busy, retrying in 2 seconds...');
+                            await new Promise(r => setTimeout(r, 2000));
+                            return performGeneration(true);
+                        }
+                        const data = await response.json().catch(() => ({}));
+                        throw new Error(data.error || `Server returned ${response.status}`);
+                    }
+                    
+                    const blob = await response.blob();
+                    const objectURL = URL.createObjectURL(blob);
+                    
+                    resultImg.src = objectURL;
+                    resultImg.onload = () => {
+                        resultImg.style.opacity = '1';
+                        btn.disabled = false;
+                        btn.innerText = 'Generate';
+                        resultImg.scrollIntoView({ behavior: 'smooth' });
+                    };
+                } catch (e) {
+                    console.error(e);
                     btn.disabled = false;
                     btn.innerText = 'Generate';
-                    resultImg.scrollIntoView({ behavior: 'smooth' });
-                };
-            } catch (e) {
-                console.error(e);
-                btn.disabled = false;
-                btn.innerText = 'Generate';
-                resultImg.style.opacity = '1';
-                alert('Generation Error: ' + e.message);
-            }
+                    resultImg.style.opacity = '1';
+                    alert('Generation Error: ' + e.message);
+                }
+            };
+
+            await performGeneration();
         }
     </script>
 
