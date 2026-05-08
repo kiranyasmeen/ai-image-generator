@@ -14,14 +14,21 @@
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
 
 /* ===== NAVBAR ===== */
-.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 4rem; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-.nav-brand { font-size: 1.3rem; font-weight: 900; color: var(--text); }
+.navbar { 
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 8%;
+    background: rgba(10, 10, 11, 0.95); /* High opacity for visibility */
+    backdrop-filter: blur(25px);
+    border-bottom: 1px solid var(--border);
+}
+.nav-brand { font-size: 1.4rem; font-weight: 900; letter-spacing: -1.5px; text-decoration: none; color: white; }
 .nav-brand span { color: var(--accent); }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
-.nav-links a:hover, .nav-links a.active { color: var(--accent-light); }
-.btn-nav { padding: 0.5rem 1.5rem; background: var(--accent); color: white; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
-.btn-nav:hover { background: var(--accent-light); }
+.nav-links a { color: #f8fafc; text-decoration: none; font-size: 0.9rem; font-weight: 700; transition: color 0.3s; opacity: 0.9; }
+.nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
+.btn-nav { padding: 0.6rem 1.8rem; background: var(--accent); color: white; border-radius: 100px; text-decoration: none; font-size: 0.85rem; font-weight: 800; transition: transform 0.2s; }
+.btn-nav:hover { transform: scale(1.05); }
 .hamburger { display: none; background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
 
 /* ===== HERO ===== */
