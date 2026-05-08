@@ -9,15 +9,15 @@ const HF_IMAGE_MAP = {
   'flux':         'black-forest-labs/FLUX.1-schnell',
   'flux-realism': 'black-forest-labs/FLUX.1-dev',
   'turbo':        'stabilityai/sdxl-turbo',
-  'any-dark':     'stablediffusionapi/realistic-vision-v6.0-b1-inpaint',
+  'any-dark':     'Lykon/DreamShaper_v8',
 };
 
 async function fetchFromHuggingFace(prompt, model, apiKey) {
-  console.log(`[HF] Generating: ${prompt} with ${model}`);
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
+  console.log(`[HF] Calling: ${hfModel}`);
+  
   const controller = new AbortController();
-  // Tighten timeout to 5s to leave room for fallback
-  const timer = setTimeout(() => controller.abort(), 5000);
+  const timer = setTimeout(() => controller.abort(), 6000);
 
   try {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
@@ -34,11 +34,20 @@ async function fetchFromHuggingFace(prompt, model, apiKey) {
       signal: controller.signal,
     });
 
-    if (res.status === 429) throw { status: 429, message: 'Rate limited' };
+    if (res.status === 404) {
+      throw new Error(`Model not found (404). Note: FLUX models often require a paid HF plan or terms acceptance at huggingface.co/${hfModel}`);
+    }
+    if (res.status === 403) {
+      throw new Error(`Access Forbidden (403). Please accept the model terms at huggingface.co/${hfModel}`);
+    }
+    if (res.status === 429) {
+      throw new Error('Rate limited by HuggingFace');
+    }
 
     const contentType = res.headers.get('content-type') || '';
     if (!res.ok || !contentType.startsWith('image/')) {
-      throw new Error(`HF ${res.status}`);
+      const text = await res.text().catch(() => '');
+      throw new Error(`HF Error ${res.status}: ${text.slice(0, 50)}`);
     }
 
     const buffer = await res.arrayBuffer();
