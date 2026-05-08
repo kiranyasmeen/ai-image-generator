@@ -1,6 +1,6 @@
 /**
  * Vercel Serverless Function — /api/generate
- * ROBUST MULTI-STAGE ENGINE
+ * DEEP RESILIENCE VERSION
  */
 
 const HF_IMAGE_MAP = {
@@ -13,7 +13,7 @@ const HF_IMAGE_MAP = {
 async function fetchFromHuggingFace(prompt, model, apiKey) {
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15000); // 15s patience
+  const timer = setTimeout(() => controller.abort(), 18000); // 18s for primary
 
   try {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
@@ -42,31 +42,45 @@ async function fetchFromHuggingFace(prompt, model, apiKey) {
 }
 
 async function fetchWithFallback(prompt, model) {
-  const fallbackModels = [model, 'flux', 'turbo'];
+  // Rotate through multiple tiers of fallback
+  const fallbackModels = [model, 'flux', 'turbo', 'dreamshaper', 'deliberate'];
+  
   for (const m of fallbackModels) {
+    console.log(`[Resilience] Trying engine tier: ${m}`);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
+    const timer = setTimeout(() => controller.abort(), 12000); // 12s per fallback
     const seed = Math.floor(Math.random() * 999999);
     
     try {
       const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&model=${m}&nologo=true`;
       const res = await fetch(url, { signal: controller.signal });
+      
       if (res.ok && res.headers.get('content-type')?.startsWith('image/')) {
         const buffer = await res.arrayBuffer();
         return { buffer, contentType: res.headers.get('content-type') };
       }
     } catch (e) {
-      console.warn(`[Fallback] ${m} failed: ${e.message}`);
+      console.warn(`[Resilience] Tier ${m} failed: ${e.message}`);
     } finally {
       clearTimeout(timer);
     }
   }
-  throw new Error('Our creative engines are busy. Please try again in a few seconds.');
+  
+  // FINAL EMERGENCY: Raw prompt with no model params (Uses pollinations default high-speed)
+  const lastResortUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true`;
+  const finalRes = await fetch(lastResortUrl);
+  if (finalRes.ok) {
+    const buffer = await finalRes.arrayBuffer();
+    return { buffer, contentType: finalRes.headers.get('content-type') };
+  }
+
+  throw new Error('All high-performance engines are saturated. Please try in 5 seconds.');
 }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const prompt = req.query.prompt || 'a professional landscape';
