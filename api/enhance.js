@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   if (!prompt) { res.status(400).json({ error: 'prompt is required' }); return; }
   const fallback = `${prompt}, highly detailed, photorealistic, cinematic lighting, 8k, masterpiece, sharp focus`;
   try {
-    const enhanced = process.env.HF_API_KEY ? await enhanceViaHF(prompt) : fallback;
+    const enhanced = (process.env.HF_API_KEY || process.env.HF_TOKEN) ? await enhanceViaHF(prompt) : fallback;
     res.status(200).json({ enhanced: enhanced || fallback });
   } catch (e) {
     res.status(200).json({ enhanced: fallback });

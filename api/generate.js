@@ -21,7 +21,7 @@ async function fetchFromHuggingFace(prompt, model) {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
       method: 'POST',
       headers: {
-        'Authorization':    `Bearer ${process.env.HF_API_KEY}`,
+        'Authorization':    `Bearer ${process.env.HF_API_KEY || process.env.HF_TOKEN}`,
         'Content-Type':     'application/json',
         'x-wait-for-model': 'true',
       },
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
 
   try {
     let result;
-    if (process.env.HF_API_KEY) {
+    if (process.env.HF_API_KEY || process.env.HF_TOKEN) {
       try {
         result = await fetchFromHuggingFace(prompt, model);
       } catch (e) {
