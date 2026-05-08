@@ -16,7 +16,8 @@ async function fetchFromHuggingFace(prompt, model) {
   console.log(`[HF] Generating: ${prompt} with ${model}`);
   const hfModel = HF_IMAGE_MAP[model] || HF_IMAGE_MAP['flux'];
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
+  // Tighten timeout to 5s to leave room for fallback
+  const timer = setTimeout(() => controller.abort(), 5000);
 
   try {
     const res = await fetch(`https://api-inference.huggingface.co/models/${hfModel}`, {
@@ -33,16 +34,10 @@ async function fetchFromHuggingFace(prompt, model) {
       signal: controller.signal,
     });
 
-    if (res.status === 429) {
-      console.log('[HF] Rate limited');
-      const e = new Error('Rate limited');
-      e.status = 429;
-      throw e;
-    }
+    if (res.status === 429) throw { status: 429, message: 'Rate limited' };
 
     const contentType = res.headers.get('content-type') || '';
     if (!res.ok || !contentType.startsWith('image/')) {
-      console.log(`[HF] Error: ${res.status}`);
       throw new Error(`HF ${res.status}`);
     }
 
@@ -55,11 +50,13 @@ async function fetchFromHuggingFace(prompt, model) {
 
 async function fetchFromPollinations(prompt, model) {
   console.log(`[Pol] Falling back for: ${prompt}`);
-  const modelOrder = [model, 'turbo', 'flux'].filter((m, i, a) => a.indexOf(m) === i);
+  // Only try the requested model and one safe fallback to save time
+  const modelOrder = [model, 'flux'].filter((m, i, a) => a.indexOf(m) === i);
 
   for (const m of modelOrder) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 9000);
+    // 4s timeout per attempt
+    const timer = setTimeout(() => controller.abort(), 4000);
     const seed = Math.floor(Math.random() * 999999);
     const url  = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`
                + `?width=1024&height=1024&seed=${seed}&model=${m}&nologo=true`;
@@ -76,7 +73,7 @@ async function fetchFromPollinations(prompt, model) {
         return { buffer, contentType };
       }
     } catch (e) {
-      console.log(`[Pol] fallback failed for ${m}`);
+      console.log(`[Pol] attempt failed for ${m}`);
     } finally {
       clearTimeout(timer);
     }
@@ -104,18 +101,11 @@ export default async function handler(req, res) {
       try {
         result = await fetchFromHuggingFace(prompt, model);
       } catch (e) {
-        hfError = e.message;
-        if (e.status === 429) {
-          console.log('[HF] Rate limited — falling back to Pollinations');
-        } else {
-          console.log(`[HF] Failed: ${hfError} — falling back to Pollinations`);
-        }
-        
-        // Always fallback to Pollinations if HF fails for any reason
+        hfError = e.message || 'Timeout/Error';
+        console.log(`[HF] Failed: ${hfError} — falling back to Pollinations`);
         result = await fetchFromPollinations(prompt, model);
       }
     } else {
-      hfError = 'HF_TOKEN not found in Vercel environment';
       result = await fetchFromPollinations(prompt, model);
     }
 
@@ -123,8 +113,9 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).send(Buffer.from(result.buffer));
   } catch (e) {
+    console.error('[Generate Error]', e.message);
     res.status(503).json({ 
-      error: `Service Unavailable. HF Error: ${hfError || 'None'}. Pol Error: ${e.message}` 
+      error: 'Generation failed. The models are busy, please try again in a moment.'
     });
   }
 }
