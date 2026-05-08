@@ -54,21 +54,42 @@
             btn.innerText = 'Generating...';
             
             try {
+                // Add a unique timestamp to prevent caching
                 const url = `/api/generate?prompt=${encodeURIComponent(prompt)}&model=flux&t=${Date.now()}`;
+                
                 resultImg.src = url;
                 resultArea.style.display = 'block';
                 resultPrompt.innerText = prompt;
                 
+                // Add a timeout for the image load
+                const loadTimeout = setTimeout(() => {
+                    if (btn.disabled) {
+                        btn.disabled = false;
+                        btn.innerText = 'Generate';
+                        alert('Generation is taking longer than expected. Please check back in a few seconds or try a simpler prompt.');
+                    }
+                }, 15000);
+
                 resultImg.onload = () => {
+                    clearTimeout(loadTimeout);
                     btn.disabled = false;
                     btn.innerText = 'Generate';
                     resultImg.scrollIntoView({ behavior: 'smooth' });
                 };
                 
-                resultImg.onerror = () => {
+                resultImg.onerror = async () => {
+                    clearTimeout(loadTimeout);
                     btn.disabled = false;
                     btn.innerText = 'Generate';
-                    alert('Generation failed. Please try again.');
+                    
+                    // Try to fetch the error message from the API
+                    try {
+                        const checkRes = await fetch(url);
+                        const errData = await checkRes.json();
+                        alert(`Generation Error: ${errData.error || 'The model is currently busy. Please wait 1 minute and try again.'}`);
+                    } catch (e) {
+                        alert('Generation failed. The AI model might be cold-starting or busy. Please try again in a moment.');
+                    }
                 };
             } catch (e) {
                 btn.disabled = false;

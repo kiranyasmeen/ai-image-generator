@@ -71,7 +71,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-ser
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 .gallery-item { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
 .gallery-item:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(139,92,246,0.15); }
-.gallery-item img { width: 100%; height: 220px; object-fit: cover; display: block; }
+.gallery-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: #1a1a1a; }
 .gallery-item-info { padding: 1rem; background: var(--surface); }
 .gallery-item-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
 .gallery-item-info span { font-size: 0.8rem; color: var(--accent-light); }
